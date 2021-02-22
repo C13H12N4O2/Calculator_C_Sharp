@@ -109,13 +109,13 @@ namespace WindowsFormsApplication5
         private void _btn_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
+
             if (btn.Text == "C")
             {
                 _labelClear();
             }
-            else if (btn.Text == "=")
+            else if (btn.Text == "=" && !_isEmpty())
             {
-                if (!_isEmpty())
                 _listboxHistory.Items.Add(_calculate());
                 _labelClear();
             }
