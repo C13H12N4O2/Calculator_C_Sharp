@@ -64,10 +64,10 @@ namespace WindowsFormsApplication5
 
         private string _calculate()
         {
+            StringBuilder str = new StringBuilder();
             Stack<string> stack = new Stack<string>();
-            Queue<string> queue = new Queue<string>();
             List<string> list = new List<string>();
-            string curOperator, tmp = "", str = "";
+            string curOperator, tmp = "";
             bool flag = false;
             int left, right;
 
@@ -94,8 +94,9 @@ namespace WindowsFormsApplication5
                         flag = false;
                     }
                 }
-                    
-                str += item + " ";
+
+                str.Append(item);
+                str.Append(' ');
             }
 
             foreach (string item in stack)
@@ -122,7 +123,10 @@ namespace WindowsFormsApplication5
                     stack.Push(item);
             }
 
-            return str + "= " + stack.Pop();
+            str.Append("= ");
+            str.Append(stack.Pop());
+
+            return str.ToString();
         }
 
         private void _btn_Click(object sender, EventArgs e)
