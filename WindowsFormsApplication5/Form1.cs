@@ -123,39 +123,6 @@ namespace WindowsFormsApplication5
             }
 
             return str + "= " + stack.Pop();
-
-            foreach (string item in _elemList)
-            {
-                if (_isOperator(item))
-                {
-                    if (item == "+" || item == "-")
-                        queue.Enqueue(queue.Dequeue());
-                    stack.Push(item);
-                }
-                else { 
-                    queue.Enqueue(item);
-                }
-
-                str += item + ' ';
-            }
-
-            while (stack.Count > 0)
-            {
-                curOperator = stack.Pop();
-                left = int.Parse(queue.Dequeue());
-                right = int.Parse(queue.Dequeue());
-
-                if (curOperator == "+")
-                    queue.Enqueue(Convert.ToString(right + left));
-                else if (curOperator == "-")
-                    queue.Enqueue(Convert.ToString(right - left));
-                else if (curOperator == "×")
-                    queue.Enqueue(Convert.ToString(right * left));
-                else
-                    queue.Enqueue(Convert.ToString(right / left));
-            }
-
-            return str + "= " + queue.Dequeue();
         }
 
         private void _btn_Click(object sender, EventArgs e)
