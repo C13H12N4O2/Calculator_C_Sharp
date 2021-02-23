@@ -66,7 +66,9 @@ namespace WindowsFormsApplication5
         {
             Stack<string> stack = new Stack<string>();
             Queue<string> queue = new Queue<string>();
-            string curOperator, str = "";
+            List<string> list = new List<string>();
+            string curOperator, tmp = "", str = "";
+            bool flag = false;
             int left, right;
 
             if (_currentValue != "")
@@ -75,35 +77,85 @@ namespace WindowsFormsApplication5
             foreach (string item in _elemList)
             {
                 if (_isOperator(item))
-                    stack.Push(item);
+                    if (stack.Count == 0 && (item == "×" || item == "%"))
+                    {
+                        tmp = item;
+                        flag = true;
+                    }
+                    else
+                        stack.Push(item);
                 else
+                {
+                    list.Add(item);
+
+                    if (flag)
+                    {
+                        list.Add(tmp);
+                        flag = false;
+                    }
+                }
+                    
+                str += item + " ";
+            }
+
+            foreach (string item in stack)
+                list.Add(item);
+
+            foreach (string item in list)
+            {
+                if (_isOperator(item))
+                {
+                    curOperator = item;
+                    left = int.Parse(stack.Pop());
+                    right = int.Parse(stack.Pop());
+
+                    if (curOperator == "+")
+                        stack.Push(Convert.ToString(right + left));
+                    else if (curOperator == "-")
+                        stack.Push(Convert.ToString(right - left));
+                    else if (curOperator == "×")
+                        stack.Push(Convert.ToString(right * left));
+                    else
+                        stack.Push(Convert.ToString(right / left));
+                }
+                else
+                    stack.Push(item);
+            }
+
+            return str + "= " + stack.Pop();
+
+            foreach (string item in _elemList)
+            {
+                if (_isOperator(item))
+                {
+                    if (item == "+" || item == "-")
+                        queue.Enqueue(queue.Dequeue());
+                    stack.Push(item);
+                }
+                else { 
                     queue.Enqueue(item);
+                }
+
                 str += item + ' ';
             }
 
             while (stack.Count > 0)
-                queue.Enqueue(stack.Pop());
-
-            while (!_isOperator(queue.Peek()))
-                stack.Push(queue.Dequeue());
-
-            while (queue.Count > 0)
             {
-                curOperator = queue.Dequeue();
-                left = int.Parse(stack.Pop());
-                right = int.Parse(stack.Pop());
+                curOperator = stack.Pop();
+                left = int.Parse(queue.Dequeue());
+                right = int.Parse(queue.Dequeue());
 
                 if (curOperator == "+")
-                    stack.Push(Convert.ToString(right + left));
+                    queue.Enqueue(Convert.ToString(right + left));
                 else if (curOperator == "-")
-                    stack.Push(Convert.ToString(right - left));
+                    queue.Enqueue(Convert.ToString(right - left));
                 else if (curOperator == "×")
-                    stack.Push(Convert.ToString(right * left));
+                    queue.Enqueue(Convert.ToString(right * left));
                 else
-                    stack.Push(Convert.ToString(right / left));
+                    queue.Enqueue(Convert.ToString(right / left));
             }
 
-            return str + "= " + stack.Pop();
+            return str + "= " + queue.Dequeue();
         }
 
         private void _btn_Click(object sender, EventArgs e)
